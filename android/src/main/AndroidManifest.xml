@@ -1,0 +1,11 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+  <application>
+    <!-- Runs at app launch, before any activity, so a push tap that launches the app waits for
+         JavaScript's link handling ("Push at launch"). Does no work beyond a flag. -->
+    <provider
+      android:name="io.kirora.reactnative.KiroraLaunchProvider"
+      android:authorities="${applicationId}.kirora-launch"
+      android:exported="false"
+      android:initOrder="100" />
+  </application>
+</manifest>

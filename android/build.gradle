@@ -1,0 +1,41 @@
+def safeExtGet(prop, fallback) {
+  rootProject.ext.has(prop) ? rootProject.ext.get(prop) : fallback
+}
+
+apply plugin: 'com.android.library'
+apply plugin: 'org.jetbrains.kotlin.android'
+
+android {
+  namespace 'io.kirora.reactnative'
+  compileSdk safeExtGet('compileSdkVersion', 35)
+
+  defaultConfig {
+    minSdk safeExtGet('minSdkVersion', 24)
+    consumerProguardFiles 'consumer-rules.pro'
+  }
+
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_11
+    targetCompatibility JavaVersion.VERSION_11
+  }
+
+  kotlinOptions {
+    jvmTarget = '11'
+  }
+}
+
+repositories {
+  google()
+  mavenCentral()
+  // Development: the Kirora Android SDK is published here by `./gradlew publishToMavenLocal`.
+  mavenLocal()
+}
+
+def kiroraSdkVersion = safeExtGet('kiroraAndroidSdkVersion', '0.1.0')
+
+dependencies {
+  implementation 'com.facebook.react:react-android'
+  // The core SDK, and the Firebase side of push (FCM service, notification permission).
+  api "com.kirora:android-sdk:${kiroraSdkVersion}"
+  implementation "com.kirora:android-sdk-push:${kiroraSdkVersion}"
+}

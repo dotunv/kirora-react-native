@@ -1,0 +1,47 @@
+{
+  "name": "@kirora/react-native",
+  "version": "0.1.0",
+  "description": "Kirora client SDK for React Native: events, visits, consent and push.",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kiroratech/kirora-react-native.git"
+  },
+  "homepage": "https://github.com/kiroratech/kirora-react-native#readme",
+  "bugs": "https://github.com/kiroratech/kirora-react-native/issues",
+  "files": [
+    "lib",
+    "!lib/__tests__",
+    "src",
+    "!src/__tests__",
+    "android",
+    "!android/build",
+    "!android/.gradle",
+    "ios",
+    "kirora-react-native.podspec",
+    "react-native.config.js",
+    "jest.js",
+    "jest.d.ts",
+    "README.md"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "jest",
+    "prepare": "npm run build"
+  },
+  "peerDependencies": {
+    "react-native": ">=0.71.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.12",
+    "@types/node": "^22.0.0",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.2.5",
+    "typescript": "^5.6.0"
+  },
+  "license": "UNLICENSED",
+  "private": false
+}
