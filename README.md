@@ -4,9 +4,8 @@ Track signed-in users' app activity and connect their devices to Kirora push not
 The package exposes one TypeScript API backed by Kirora's native Android and iOS SDKs.
 Native code owns event storage, sessions, consent, retries and notification handling.
 
-**Preview: 0.1.0.** The findings of the [review](docs/review.md) are fixed; it lists what
-remains unverified (device, push and host-app builds). Validate the exact native artifacts
-used by your host app. Successful JavaScript calls alone do not establish delivery.
+**Preview: 0.1.0.** Device, push and host-app builds are unverified. Validate the exact native
+artifacts used by your host app. Successful JavaScript calls alone do not establish delivery.
 
 ## Requirements and installation
 
@@ -174,9 +173,8 @@ await kirora.flush();
 ```
 
 Flush attempts delivery without intentionally bypassing consent or server Retry-After.
-It is not a delivery receipt. Verify your resolved native artifacts against the backend before release. During the
-review, a stale Android artifact was replaced and the refreshed context passed schema
-validation (R06); neither check establishes live delivery.
+It is not a delivery receipt. Verify your resolved native artifacts against the backend before release. Neither a
+successful call nor a schema check establishes live delivery.
 
 ### Redact app properties before native storage
 
@@ -383,7 +381,7 @@ The installation ID is random, not an advertising/hardware ID. Core event contex
 the shared contract: installation ID, session, locale/timezone and library, plus approved
 mobile app, OS, screen and device manufacturer/model/type fields as native releases adopt
 them. Network details are not part of the current contract. Older preview artifacts have
-different collection behavior, as R06 records. Verify the actual native artifact before
+different collection behavior. Verify the actual native artifact before
 making collection disclosures. Push registration
 includes app/OS versions, locale/timezone and the platform token. Influenced app-open
 times are behavioural and follow tracking consent; push delivery and tap reports are
@@ -411,16 +409,14 @@ npm pack --ignore-scripts
 ```
 
 Build before packing so `lib/` contains JS and declarations. The repository's Jest suite
-is available through `npm test`, with regressions for each review finding.
+is available through `npm test`, with regression tests.
 There is no bundled native example host or native build CI matrix in this checkout.
 Build your consuming Android/iOS app to validate autolinking, dependency resolution,
 architecture support and push setup.
 
-The [review](docs/review.md) records exactly what passed: TypeScript build/typecheck,
-package inspection, standalone probes, Android bridge source compilation, Swift parsing
-and podspec syntax. Full iOS linking, native host/device execution and production
-publication remain unverified. The shared [SDK contract](../../omnichannel/docs/sdk-interface.md)
-is the authority for intended cross-platform behavior.
+Verified so far: TypeScript build/typecheck, package inspection, Android bridge compilation,
+Swift parsing and podspec syntax. Full iOS linking, native host/device execution and
+production publication remain unverified.
 
 ## License
 
