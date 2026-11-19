@@ -3,13 +3,14 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "sdk": "node -e \"require('fs').mkdirSync('vendor',{recursive:true})\" && npm pack .. --pack-destination vendor --silent && npm install --no-save ./vendor/kirora-react-native-0.1.0.tgz",
+    "sdk": "node scripts/pack-sdk.js",
     "android": "react-native run-android",
     "start": "react-native start",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@kirora/react-native": "file:vendor/kirora-react-native.tgz",
     "react": "19.3.0",
     "react-native": "0.88.1",
     "react-native-safe-area-context": "^5.5.2"

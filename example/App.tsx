@@ -1,5 +1,6 @@
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {
+  Platform,
   Pressable,
   ScrollView,
   StatusBar,
@@ -19,7 +20,7 @@ const kirora = new Kirora({
   apiUrl: CONFIG.apiUrl,
   trackAppLifecycle: true,
   logLevel: 'debug',
-  push: CONFIG.pushEnabled,
+  push: CONFIG.pushEnabled ? {pushAppId: CONFIG.pushAppId || undefined} : false,
   // Called when the SDK needs a (fresh) user token. Your backend signs it.
   fetchUserToken: async () => CONFIG.userToken || null,
 });
@@ -36,7 +37,7 @@ function Root() {
   const [state, setState] = useState<KiroraState | null>(null);
   const [push, setPush] = useState<PushStatus | null>(null);
   const [message, setMessage] = useState('Ready.');
-  const [lastPush, setLastPush] = useState<string | null>(null);
+  const [lastPush, setLastPush] = useState<{event: 'Received' | 'Tapped'; data: Record<string, string>} | null>(null);
 
   const refresh = useCallback(async () => {
     setState(await kirora.getState());
@@ -46,8 +47,8 @@ function Root() {
   useEffect(() => {
     refresh();
     const timer = setInterval(refresh, 2000);
-    const offReceived = kirora.onNotificationReceived(d => setLastPush(`Received: ${d.title ?? JSON.stringify(d)}`));
-    const offClicked = kirora.onNotificationClicked(d => setLastPush(`Tapped: ${d.title ?? JSON.stringify(d)}`));
+    const offReceived = kirora.onNotificationReceived(data => setLastPush({event: 'Received', data}));
+    const offClicked = kirora.onNotificationClicked(data => setLastPush({event: 'Tapped', data}));
     return () => {
       clearInterval(timer);
       offReceived();
@@ -120,7 +121,14 @@ function Root() {
             onValueChange={on => run('Marketing consent', () => kirora.setPushConsent(on))}
           />
         </View>
-        {lastPush ? <Row label="Last" value={lastPush} c={c} /> : null}
+        {lastPush ? (
+          <View style={s.block}>
+            <Text style={s.label}>Last notification ({lastPush.event.toLowerCase()})</Text>
+            <Text style={s.json} selectable>
+              {JSON.stringify(lastPush.data, null, 2)}
+            </Text>
+          </View>
+        ) : null}
         {!CONFIG.pushEnabled ? <Text style={s.note}>Push is off in this build. See README.</Text> : null}
       </Section>
 
@@ -170,6 +178,8 @@ const styles = (c: Colors) =>
     title: {fontSize: 32, fontWeight: '700', color: c.text},
     muted: {fontSize: 13, color: c.muted},
     note: {fontSize: 13, color: c.muted, padding: 14},
+    block: {padding: 14, gap: 8},
+    json: {fontSize: 12, color: c.muted, fontFamily: Platform.select({ios: 'Menlo', default: 'monospace'})},
     sectionTitle: {fontSize: 13, fontWeight: '600', color: c.muted, textTransform: 'uppercase', marginLeft: 4},
     card: {backgroundColor: c.card, borderRadius: 12, overflow: 'hidden'},
     row: {

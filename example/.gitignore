@@ -78,3 +78,5 @@ yarn-error.log
 src/config.local.json
 vendor/
 android/app/google-services.json
+# The example depends on a locally packed SDK tarball, so a lockfile would pin its changing hash
+package-lock.json
