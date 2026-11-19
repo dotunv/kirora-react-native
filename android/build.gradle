@@ -24,6 +24,15 @@ android {
   }
 }
 
+// React Native's Gradle plugin (0.74 and later) raises every library to Java 17 and sets Kotlin's
+// toolchain to match, unless the app sets react.internal.disableJavaVersionAlignment. A fixed Kotlin
+// jvmTarget of 11 would then disagree with Java and fail with "Inconsistent JVM Target Compatibility",
+// so Kotlin follows the Java level the module ends up with. This runs after the Android plugin has
+// applied the app's and React Native's settings.
+afterEvaluate {
+  android.kotlinOptions.jvmTarget = android.compileOptions.targetCompatibility.toString()
+}
+
 repositories {
   google()
   mavenCentral()
