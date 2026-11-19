@@ -1,0 +1,41 @@
+buildscript {
+    ext {
+        buildToolsVersion = "37.0.0"
+        minSdkVersion = 24
+        compileSdkVersion = 37
+        targetSdkVersion = 36
+        ndkVersion = "28.2.13676358"
+        kotlinVersion = "2.2.0"
+    }
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath("com.android.tools.build:gradle")
+        classpath("com.facebook.react:react-native-gradle-plugin")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin")
+        classpath("com.google.gms:google-services:4.4.2")
+    }
+}
+
+// Development: the Kirora Android SDK is published here by
+// `./gradlew publishToMavenLocal` in kirora-android (it isn't on a public repository yet).
+allprojects {
+    repositories {
+        mavenLocal()
+    }
+}
+
+// Workaround for @kirora/react-native 0.1.0: React Native's Gradle plugin compiles every library
+// with Java 17, but the wrapper pins Kotlin's jvmTarget to 11, so the build fails with
+// "Inconsistent JVM Target Compatibility". Align the wrapper's Kotlin target here.
+subprojects { sub ->
+    sub.afterEvaluate {
+        if (sub.name == "kirora_react-native" && sub.plugins.hasPlugin("org.jetbrains.kotlin.android")) {
+            sub.android.kotlinOptions.jvmTarget = "17"
+        }
+    }
+}
+
+apply plugin: "com.facebook.react.rootproject"
